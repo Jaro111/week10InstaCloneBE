@@ -1,9 +1,21 @@
-const { Sequelize } = require("sequelize");
+require("dotenv").config();
+const express = require("express");
 
-const sequelize = new Sequelize(process.env.MYSQL_URI);
+const User = require("./users/model");
+const useRouter = require("./users/routes");
 
-sequelize.authenticate();
+const app = express();
 
-console.log("db connecrion is working");
+const port = process.env.PORT || 5001;
 
-module.exports = sequelize;
+app.use(express.json());
+app.use(useRouter);
+
+const SyncTables = () => {
+  User.sync();
+};
+
+app.listen(port, () => {
+  SyncTables();
+  console.log(`Server is listening on port ${port}`);
+});
