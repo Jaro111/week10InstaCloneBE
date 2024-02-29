@@ -19,7 +19,19 @@ const signUp = async (req, res) => {
 
 const logIn = async (req, res) => {
   try {
+    if (req.authCheck) {
+      const user = {
+        id: req.authCheck.id,
+        username: req.authCheck.username,
+      };
+      res
+        .status(201)
+        .json({ message: "Successfull persistant Log In", user: user });
+      return;
+    }
+
     const token = await jwt.sign({ id: req.user.id }, process.env.SECRET);
+    console.log(token);
 
     const user = {
       id: req.user.id,
@@ -27,8 +39,9 @@ const logIn = async (req, res) => {
       token: token,
     };
 
-    console.log(req.user);
-    res.status(200).json({ message: "Successfull Log In", user: user });
+    res
+      .status(201)
+      .json({ message: "Successfull persistant Log In", user: user });
   } catch (error) {
     res.status(500).json({ message: error.message, error: error });
   }
