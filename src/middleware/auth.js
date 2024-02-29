@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-
+const jwt = require("jsonwebtoken");
 const User = require("../users/model");
 
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
@@ -41,4 +41,20 @@ const comparePass = async (req, res, next) => {
   }
 };
 
-module.exports = { hashPass: hashPass, comparePass: comparePass };
+// TOKEN CHECK
+
+const tokenCheck = async (req, res, next) => {
+  try {
+    console.log(req.header);
+    console.log(req.header("Authorization"));
+    res.send({ message: req.header });
+  } catch (error) {
+    res.status(501).json({ message: error.message, error: error });
+  }
+};
+
+module.exports = {
+  hashPass: hashPass,
+  comparePass: comparePass,
+  tokenCheck: tokenCheck,
+};
